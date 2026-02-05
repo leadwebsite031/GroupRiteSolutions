@@ -3,25 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Rite Solutions | Master Utility & Infrastructure</title>
+    <title>Group Rite Solutions | Master Utility & Infrastructure Engineering KZN</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfcfc; }
         .glass { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(15px); }
         .emergency-pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
         .gradient-main { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
-        .service-tile { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #f1f5f9; }
-        .service-tile:hover { transform: translateY(-8px); border-color: #3b82f6; }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: #25d366; color: #FFF; border-radius: 50px; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 1000; transition: 0.3s; }
         
-        /* CRM STYLING */
+        /* COMMAND CENTER STYLING */
         #crm-overlay { display: none; position: fixed; inset: 0; background: #020617; z-index: 9999; color: white; }
         .sidebar { width: 280px; background: #0f172a; border-right: 1px solid #1e293b; }
-        .crm-card { background: #1e293b; border-radius: 1rem; padding: 1.5rem; border: 1px solid #334155; }
-        .status-pill { padding: 4px 12px; border-radius: 99px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .crm-card { background: #1e293b; border-radius: 1.5rem; padding: 1.5rem; border: 1px solid #334155; }
+        .status-pill { padding: 4px 10px; border-radius: 99px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+        .sla-urgent { color: #f87171; animation: blink 1.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body class="antialiased text-slate-900">
@@ -29,55 +32,66 @@
     <div id="crm-overlay" class="flex">
         <aside class="sidebar p-8 flex flex-col justify-between">
             <div>
-                <img src="logo.png" class="h-10 mb-10 brightness-0 invert" alt="GRS">
+                <div class="text-2xl font-black italic mb-10 text-blue-500">GRS <span class="text-white text-xs block font-normal not-italic tracking-widest uppercase">Command Center</span></div>
                 <nav class="space-y-4">
-                    <button onclick="showTab('dashboard')" class="w-full text-left px-4 py-3 rounded-xl bg-blue-600 font-bold text-sm flex items-center gap-3">📊 Dashboard</button>
-                    <button onclick="showTab('leads')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 font-bold text-sm flex items-center gap-3">📝 Live Leads</button>
-                    <button onclick="showTab('subs')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 font-bold text-sm flex items-center gap-3">💳 Subscriptions</button>
+                    <button onclick="showTab('dashboard')" class="w-full text-left px-4 py-3 rounded-xl bg-blue-600 font-bold text-sm">📊 Dashboard</button>
+                    <button onclick="showTab('leads')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 font-bold text-sm">📝 Live Leads</button>
+                    <button onclick="logout()" class="w-full text-left px-4 py-3 rounded-xl text-red-400 font-bold text-sm mt-10">✕ Exit System</button>
                 </nav>
             </div>
-            <button onclick="logout()" class="text-slate-500 text-xs font-bold uppercase tracking-widest hover:text-white">Exit Command Center</button>
+            <div class="text-[9px] text-slate-500 font-bold tracking-widest uppercase italic">KZN Ops v2.0</div>
         </aside>
 
-        <main class="flex-1 p-12 overflow-y-auto">
+        <main class="flex-1 p-12 overflow-y-auto bg-slate-950">
             <div id="crm-dashboard">
-                <h1 class="text-4xl font-black italic mb-2 uppercase">Infrastructure <span class="text-blue-500">Intelligence</span></h1>
-                <p class="text-slate-500 text-xs tracking-[0.3em] uppercase mb-10">Real-time KZN Operations</p>
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <h1 class="text-4xl font-black italic uppercase">Infrastructure <span class="text-blue-500">Intelligence</span></h1>
+                        <p class="text-slate-500 text-[10px] tracking-[0.3em] uppercase">Revenue & Division Forecasts</p>
+                    </div>
+                    <div class="bg-blue-600/10 border border-blue-500/20 p-4 rounded-2xl">
+                        <p class="text-[9px] font-black uppercase text-blue-400 mb-1">Projected MRR (Sub-Meters)</p>
+                        <h2 id="mrr-stat" class="text-2xl font-black text-white">R0.00</h2>
+                    </div>
+                </div>
                 
-                <div class="grid grid-cols-3 gap-8 mb-12">
+                <div class="grid grid-cols-3 gap-6 mb-12">
                     <div class="crm-card">
-                        <p class="text-slate-400 text-[10px] font-black uppercase mb-2">Total Managed Leads</p>
-                        <h2 id="stat-total" class="text-5xl font-black italic">0</h2>
+                        <p class="text-slate-400 text-[9px] font-black uppercase mb-1">Gross Pipeline</p>
+                        <h3 id="stat-value" class="text-3xl font-black italic text-blue-400">R0</h3>
                     </div>
                     <div class="crm-card">
-                        <p class="text-slate-400 text-[10px] font-black uppercase mb-2">Active Meter Subs</p>
-                        <h2 id="stat-subs" class="text-5xl font-black italic text-emerald-400">0</h2>
+                        <p class="text-slate-400 text-[9px] font-black uppercase mb-1">Active Dispatches</p>
+                        <h3 id="stat-total" class="text-3xl font-black italic text-white">0</h3>
                     </div>
                     <div class="crm-card">
-                        <p class="text-slate-400 text-[10px] font-black uppercase mb-2">Lead Value Est.</p>
-                        <h2 id="stat-value" class="text-5xl font-black italic text-blue-400">R0</h2>
+                        <p class="text-slate-400 text-[9px] font-black uppercase mb-1">Response Health</p>
+                        <h3 class="text-3xl font-black italic text-emerald-400">98%</h3>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-8">
-                    <div class="crm-card"><canvas id="divisionChart"></canvas></div>
-                    <div class="crm-card"><canvas id="velocityChart"></canvas></div>
+                    <div class="crm-card">
+                        <p class="text-xs font-black uppercase mb-6 text-slate-400 italic">Division Load Distribution</p>
+                        <canvas id="divisionChart" height="250"></canvas>
+                    </div>
+                    <div class="crm-card">
+                        <p class="text-xs font-black uppercase mb-6 text-slate-400 italic">MRR Subscription Growth</p>
+                        <canvas id="mrrChart" height="250"></canvas>
+                    </div>
                 </div>
             </div>
 
             <div id="crm-leads-list" class="hidden">
-                <h2 class="text-2xl font-black mb-6 italic uppercase">Client Dispatch History</h2>
+                <h2 class="text-2xl font-black mb-8 italic uppercase">Live Dispatch Log</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="text-slate-500 text-[10px] uppercase border-b border-slate-800">
-                                <th class="pb-4">Client</th>
-                                <th class="pb-4">Division</th>
-                                <th class="pb-4">Location</th>
-                                <th class="pb-4">Status</th>
-                                <th class="pb-4">Action</th>
-                            </tr>
-                        </thead>
+                        <tr class="text-slate-500 text-[10px] uppercase border-b border-slate-800">
+                            <th class="pb-4">Client / Division</th>
+                            <th class="pb-4">Dispatch Age (SLA)</th>
+                            <th class="pb-4">Status</th>
+                            <th class="pb-4">Action</th>
+                        </tr>
                         <tbody id="leads-table-body"></tbody>
                     </table>
                 </div>
@@ -85,78 +99,96 @@
         </main>
     </div>
 
+    <a href="https://wa.me/27674099143" class="whatsapp-float group" target="_blank">
+        <svg style="width:35px; height:35px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23c-1.48 0-2.93-.39-4.19-1.15l-.3-.17l-3.12.82l.83-3.04l-.2-.32a8.188 8.188 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24M8.53 7.33c-.13 0-.35.05-.54.26c-.19.21-.74.72-.74 1.76s.75 2.05.85 2.19c.1.14 1.47 2.25 3.56 3.15c.5.21.88.34 1.18.44c.51.16.97.14 1.33.08c.4-.06 1.21-.5 1.38-.98c.17-.48.17-.89.12-.98c-.05-.09-.18-.14-.38-.24c-.2-.1-.1.21-.1.21s-1.21-.6-1.39-.68c-.18-.08-.32-.12-.45.08c-.13.2-.5.63-.61.76c-.11.13-.23.15-.43.05c-.2-.1-.85-.31-1.62-.99c-.6-.54-1-1.2-1.12-1.4c-.11-.2-.01-.31.09-.41c.09-.09.2-.24.3-.35c.1-.11.14-.19.2-.32c.06-.13.03-.24-.01-.35c-.04-.11-.45-1.09-.62-1.49c-.17-.39-.34-.34-.47-.34c-.13 0-.27-.01-.41-.01Z" /></svg>
+    </a>
+
     <div class="bg-blue-600 text-white py-3 px-6 text-center text-[10px] font-black uppercase tracking-[0.3em] relative z-[100]">
         We Cover All Of KwaZulu-Natal. Book An Appointment With Us Today  
     </div>
 
     <nav class="sticky top-0 w-full z-50 glass border-b border-slate-200">
         <div class="max-w-[1440px] mx-auto px-8 py-4 flex justify-between items-center">
-            <div class="flex items-center"><img src="logo.png" alt="Group Rite" class="h-14 w-auto"></div>
-            <a href="#dispatch" class="emergency-pulse bg-red-600 text-white px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest">24/7 Rapid Dispatch</a>
+            <div class="flex items-center"><img src="logo.png" alt="Group Rite" class="h-14 w-auto object-contain"></div>
+            <a href="#dispatch" class="emergency-pulse bg-red-600 text-white px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest shadow-lg">24/7 Rapid Dispatch</a>
         </div>
     </nav>
 
-    <header class="relative pt-32 pb-40 bg-white">
-        <div class="max-w-7xl mx-auto px-8">
+    <header class="relative pt-32 pb-40 bg-white overflow-hidden">
+        <div class="absolute top-0 right-0 w-2/3 h-full bg-slate-50 -skew-x-12 translate-x-32 z-0"></div>
+        <div class="max-w-7xl mx-auto px-8 relative z-10">
             <h2 class="text-7xl md:text-9xl font-[900] text-slate-950 mb-10 leading-[0.85] tracking-tighter uppercase">One Group. <br><span class="text-blue-600 italic">Total Solve.</span></h2>
-            <p class="text-slate-500 text-xl max-w-2xl mb-12">Engineered solutions for KZN infrastructure. 9 Specialized divisions.</p>
-            <a href="#dispatch" class="bg-slate-950 text-white px-12 py-6 rounded-3xl font-black uppercase tracking-widest shadow-2xl">Initialize Lead</a>
+            <p class="text-slate-500 text-xl leading-relaxed mb-12 max-w-2xl font-medium">Engineered solutions for KZN infrastructure. 9 Specialized divisions from Leak Detection to Smart Metering.</p>
+            <a href="#dispatch" class="bg-slate-950 text-white px-12 py-6 rounded-3xl font-black uppercase tracking-widest hover:bg-blue-600 shadow-2xl transition-all">Initialize Lead</a>
         </div>
     </header>
 
-    <section id="dispatch" class="py-40 px-8 gradient-main">
-        <div class="max-w-5xl mx-auto bg-white p-12 md:p-24 rounded-[5rem] shadow-2xl">
+    <section id="dispatch" class="py-40 px-8 gradient-main relative">
+        <div class="max-w-5xl mx-auto bg-white p-12 md:p-24 rounded-[5rem] shadow-2xl relative z-10">
             <h2 class="text-5xl font-[900] uppercase text-center mb-16 italic">Technical <span class="text-blue-600">Dispatch.</span></h2>
             <form id="leadForm" class="space-y-8">
-                <input type="text" id="name" placeholder="Full Name / Company" required class="w-full p-6 bg-slate-50 rounded-2xl outline-none font-bold">
-                <input type="tel" id="phone" placeholder="WhatsApp Number" required class="w-full p-6 bg-slate-50 rounded-2xl outline-none font-bold">
-                <input type="text" id="address" placeholder="Physical Property Address" required class="w-full p-6 bg-slate-50 rounded-2xl outline-none font-bold">
-                <select id="service" class="w-full p-6 bg-slate-50 rounded-2xl outline-none font-black text-blue-600">
-                    <option>Leak Detection</option>
-                    <option>Fire Services</option>
-                    <option>Plumbing</option>
-                    <option>Smart Metering</option>
-                    <option>Electrical (Grid/COC)</option>
-                </select>
-                <div class="flex items-center gap-4 p-6 bg-blue-50 rounded-2xl">
-                    <input type="checkbox" id="is_subscription" class="w-6 h-6 accent-blue-600">
-                    <label class="text-[10px] font-black text-blue-900 uppercase">Enquire about Meter Subscription Agreements</label>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <input type="text" id="name" placeholder="Full Name / Company" required class="w-full p-6 bg-slate-50 rounded-2xl outline-none font-bold">
+                    <input type="tel" id="phone" placeholder="WhatsApp Number" required class="w-full p-6 bg-slate-50 rounded-2xl outline-none font-bold">
                 </div>
-                <textarea id="details" required class="w-full p-8 bg-slate-50 rounded-2xl h-40 font-medium" placeholder="Project details..."></textarea>
+                <input type="text" id="address" placeholder="Physical Property Address" required class="w-full p-6 bg-slate-50 rounded-2xl outline-none font-bold">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <select id="service" class="w-full p-6 bg-slate-50 rounded-2xl outline-none font-black text-blue-600">
+                        <option>Leak Detection</option>
+                        <option>Fire Services</option>
+                        <option>Plumbing</option>
+                        <option>Building & Civil</option>
+                        <option>Maintenance</option>
+                        <option>Waterproofing</option>
+                        <option>Smart Metering</option>
+                        <option>Electrical/COC</option>
+                    </select>
+                    <div class="flex items-center gap-4 p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                        <input type="checkbox" id="is_subscription" class="w-6 h-6 accent-blue-600">
+                        <label class="text-[9px] font-black text-blue-900 uppercase leading-tight">Enquire about Meter Subscription Agreements</label>
+                    </div>
+                </div>
+                <textarea id="details" required class="w-full p-8 bg-slate-50 rounded-3xl h-40 font-medium" placeholder="Technical briefing..."></textarea>
                 <button type="submit" id="submitBtn" class="w-full bg-slate-950 text-white font-black py-8 rounded-[3rem] uppercase tracking-widest text-xl hover:bg-blue-600 transition-all">Initialize Lead Dispatch</button>
             </form>
         </div>
     </section>
 
-    <footer class="bg-slate-50 py-20 px-8 text-center border-t border-slate-200">
-        <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-6">Group Rite Solutions (PTY) LTD | POPI Compliant</p>
-        <button onclick="showLogin()" class="text-slate-300 hover:text-blue-600 text-[9px] font-bold uppercase transition">Admin System Access</button>
+    <footer class="bg-white py-20 px-8 text-center border-t">
+        <p class="text-slate-400 text-[9px] font-black uppercase tracking-widest mb-6">Group Rite Solutions (PTY) LTD | POPI Compliant</p>
+        <button onclick="showLogin()" class="text-slate-200 hover:text-blue-600 text-[9px] font-bold uppercase transition">Command Access</button>
     </footer>
 
-    <div id="login-modal" class="hidden fixed inset-0 bg-slate-950/90 z-[10000] flex items-center justify-center p-6">
+    <div id="login-modal" class="hidden fixed inset-0 bg-slate-950/95 z-[10000] flex items-center justify-center p-6">
         <div class="bg-white p-12 rounded-[3rem] max-w-sm w-full">
             <h3 class="text-2xl font-black uppercase italic mb-6">Secure <span class="text-blue-600">Login</span></h3>
-            <input type="text" id="user" placeholder="Username" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none font-bold">
-            <input type="password" id="pass" placeholder="Password" class="w-full p-4 bg-slate-100 rounded-xl mb-6 outline-none font-bold">
-            <button onclick="auth()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase tracking-widest">Access System</button>
+            <input type="text" id="user" placeholder="Username" class="w-full p-4 bg-slate-100 rounded-xl mb-4 font-bold outline-none">
+            <input type="password" id="pass" placeholder="Password" class="w-full p-4 bg-slate-100 rounded-xl mb-6 font-bold outline-none">
+            <button onclick="auth()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase tracking-widest">Enter Command Center</button>
             <button onclick="closeLogin()" class="w-full mt-4 text-slate-400 text-[10px] font-bold uppercase">Cancel</button>
         </div>
     </div>
 
     <script>
+        const TG_TOKEN = "8487737066:AAFvi5uUgSziOlE-qRlif7lM_HHlzFGn74I";
+        const CHAT_ID = "8187670531";
+        
+        // CRM DATABASE
         let leads = JSON.parse(localStorage.getItem('grs_db')) || [];
-        let myChart = null;
+        let divisionChart = null;
+        let mrrChart = null;
 
         document.getElementById('leadForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerText;
             
-            // New interaction per your request
+            // New Interaction
+            btn.innerText = "GROUP RITE SOLUTIONS CC WILL GET BACK TO YOU IN A MOMENT";
             btn.disabled = true;
-            btn.innerText = "Group Rite Solutions cc will get back to you in a moment";
             btn.classList.add('bg-blue-600');
-            
-            const newLead = {
+
+            const leadData = {
                 id: Date.now(),
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
@@ -164,106 +196,127 @@
                 service: document.getElementById('service').value,
                 sub: document.getElementById('is_subscription').checked,
                 details: document.getElementById('details').value,
-                date: new Date().toLocaleDateString(),
-                status: 'New Dispatch'
+                timestamp: new Date().toISOString(),
+                status: 'New'
             };
 
-            leads.push(newLead);
-            localStorage.setItem('grs_db', JSON.stringify(leads));
+            // 1. TELEGRAM DISPATCH
+            const text = `🛠️ <b>NEW DISPATCH</b>\n👤 Client: ${leadData.name}\n📞 Phone: ${leadData.phone}\n📍 Address: ${leadData.address}\n🔧 Div: ${leadData.service}\n💳 Sub: ${leadData.sub ? 'YES' : 'NO'}`;
+            
+            try {
+                await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' })
+                });
 
-            confetti({ 
-                particleCount: 200, 
-                spread: 100, 
-                origin: { y: 0.8 },
-                colors: ['#2563eb', '#ffffff', '#ef4444']
-            });
+                // 2. INTERNAL SAVE
+                leads.push(leadData);
+                localStorage.setItem('grs_db', JSON.stringify(leads));
 
-            // Optional: reset form after 5 seconds to allow them to see the message
-            setTimeout(() => {
-                document.getElementById('leadForm').reset();
-                btn.disabled = false;
-                btn.innerText = "Initialize Lead Dispatch";
-                btn.classList.remove('bg-blue-600');
-            }, 5000);
+                confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 4000);
+
+            } catch (err) { alert("Dispatch Error: check connection."); }
         };
 
+        // COMMAND CENTER LOGIC
         function showLogin() { document.getElementById('login-modal').classList.remove('hidden'); }
         function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
         
         function auth() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
-            if(u === 'admin' && p === 'GRS2026!') {
+            if(document.getElementById('user').value === 'admin' && document.getElementById('pass').value === 'GRS2026!') {
                 document.getElementById('login-modal').classList.add('hidden');
                 document.getElementById('crm-overlay').style.display = 'flex';
                 initCRM();
-            } else {
-                alert('ACCESS DENIED: Credentials Invalid.');
-            }
+            } else { alert("ACCESS DENIED"); }
         }
 
         function logout() { document.getElementById('crm-overlay').style.display = 'none'; }
-
         function showTab(tab) {
             document.getElementById('crm-dashboard').classList.toggle('hidden', tab !== 'dashboard');
             document.getElementById('crm-leads-list').classList.toggle('hidden', tab !== 'leads');
         }
 
+        function calculateSLA(isoString) {
+            const diff = Math.floor((new Date() - new Date(isoString)) / 60000); // Minutes
+            if(diff < 60) return diff + "m ago";
+            return Math.floor(diff/60) + "h ago";
+        }
+
         function initCRM() {
-            if(leads.length === 0) {
-                alert("SYSTEM IDLE: CRM will populate once the first lead is received.");
-                return;
-            }
-
+            // Stats
             document.getElementById('stat-total').innerText = leads.length;
-            document.getElementById('stat-subs').innerText = leads.filter(l => l.sub).length;
             document.getElementById('stat-value').innerText = "R" + (leads.length * 4500).toLocaleString();
+            
+            const subsCount = leads.filter(l => l.sub).length;
+            document.getElementById('mrr-stat').innerText = "R" + (subsCount * 250).toLocaleString(); // Assumes R250/pm sub
 
+            // Table
             const tbody = document.getElementById('leads-table-body');
-            tbody.innerHTML = leads.map((l, index) => `
-                <tr class="border-b border-slate-800/50 text-sm">
-                    <td class="py-4 font-bold text-white">${l.name}<br><span class="text-[10px] text-slate-500">${l.phone}</span></td>
-                    <td class="py-4">${l.service}</td>
-                    <td class="py-4 text-slate-400 text-xs">${l.address}</td>
-                    <td class="py-4"><span class="status-pill bg-blue-500/20 text-blue-400">${l.status}</span></td>
-                    <td class="py-4"><button onclick="deleteLead(${index})" class="text-red-500 text-[10px] font-bold hover:underline">DELETE</button></td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = leads.map((l, i) => {
+                const age = Math.floor((new Date() - new Date(l.timestamp)) / 60000);
+                const isUrgent = age > 120; // 2 hours
+                return `
+                <tr class="border-b border-slate-800/50 text-xs">
+                    <td class="py-4">
+                        <span class="text-white font-bold block">${l.name}</span>
+                        <span class="text-blue-400 text-[9px] uppercase font-black">${l.service}</span>
+                    </td>
+                    <td class="py-4 font-mono ${isUrgent ? 'sla-urgent' : 'text-slate-400'}">${calculateSLA(l.timestamp)}</td>
+                    <td class="py-4"><span class="status-pill bg-blue-500/10 text-blue-500">${l.status}</span></td>
+                    <td class="py-4"><button onclick="deleteLead(${i})" class="text-red-800 text-[10px] font-bold">REMOVE</button></td>
+                </tr>`;
+            }).reverse().join('');
 
             renderCharts();
         }
 
         function deleteLead(index) {
-            if(confirm("Permanently remove this record from POPI vault?")) {
-                leads.splice(index, 1);
-                localStorage.setItem('grs_db', JSON.stringify(leads));
-                initCRM();
-            }
+            leads.splice(index, 1);
+            localStorage.setItem('grs_db', JSON.stringify(leads));
+            initCRM();
         }
 
         function renderCharts() {
-            const ctx1 = document.getElementById('divisionChart').getContext('2d');
-            if(myChart) myChart.destroy();
-            
-            // Count actual services from your lead data
+            // Division Load Chart
+            const divCtx = document.getElementById('divisionChart').getContext('2d');
             const counts = {};
             leads.forEach(l => counts[l.service] = (counts[l.service] || 0) + 1);
 
-            myChart = new Chart(ctx1, {
-                type: 'doughnut',
+            if(divisionChart) divisionChart.destroy();
+            divisionChart = new Chart(divCtx, {
+                type: 'bar',
                 data: {
                     labels: Object.keys(counts),
-                    datasets: [{
-                        data: Object.values(counts),
-                        backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#6366f1'],
-                        borderWidth: 0
-                    }]
+                    datasets: [{ label: 'Lead Volume', data: Object.values(counts), backgroundColor: '#3b82f6' }]
                 },
                 options: { 
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: 'white', font: { size: 10, weight: '800' } } } } 
+                    scales: { y: { beginAtZero: true, grid: { color: '#1e293b' } }, x: { grid: { display: false } } },
+                    plugins: { legend: { display: false } }
                 }
+            });
+
+            // MRR Projection Chart
+            const mrrCtx = document.getElementById('mrrChart').getContext('2d');
+            if(mrrChart) mrrChart.destroy();
+            mrrChart = new Chart(mrrCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{ 
+                        label: 'Projected Revenue', 
+                        data: [1200, 1900, 3000, 5000, 8000, 12000], 
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4 
+                    }]
+                },
+                options: { plugins: { legend: { display: false } } }
             });
         }
     </script>
